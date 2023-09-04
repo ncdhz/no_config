@@ -1,3 +1,5 @@
 __py*
 test*
 dist
+no_config.egg-info
+build

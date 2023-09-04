@@ -1,12 +1,17 @@
 import setuptools
-from . import __version__
+import os
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+about = {}
+
+with open('__init__.py', 'r') as f:
+    exec(f.read(), about)
+
 setuptools.setup(
     name='no_config',
-    version=__version__,
+    version=about['__version__'],
     author='ncdhz',
     author_email='ncdhz@qq.com',
     description='Simple configuration handling in Python.',
