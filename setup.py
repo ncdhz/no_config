@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 about = {}
 
-with open('__init__.py', 'r') as f:
+with open(os.path.join('os', '__init__.py'), 'r') as f:
     exec(f.read(), about)
 
 setuptools.setup(
@@ -19,9 +19,10 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/ncdhz/no_config',
     python_requires='>=3.7',
+    package_dir={'': 'src'},
     install_requires=[
         'PyYAML',
         'toml'
     ],
-    packages=setuptools.find_packages()
+    packages=setuptools.find_packages(exclude=['test', 'build', '__pycache__', 'no_config.egg-info'])
 )
