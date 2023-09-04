@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 about = {}
 
-with open(os.path.join('os', '__init__.py'), 'r') as f:
+with open(os.path.join('src', '__init__.py'), 'r') as f:
     exec(f.read(), about)
 
 setuptools.setup(
@@ -24,5 +24,5 @@ setuptools.setup(
         'PyYAML',
         'toml'
     ],
-    packages=setuptools.find_packages(exclude=['test', 'build', '__pycache__', 'no_config.egg-info'])
+    packages=setuptools.find_packages(exclude=['test', 'build', '__pycache__', 'no_config.egg-info'], where='src')
 )
