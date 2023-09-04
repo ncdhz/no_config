@@ -116,6 +116,18 @@ class Config:
             elif file_type == 'json':
                 import json
                 Config.__config_data = json.load(f)
-            
+            elif file_type == 'toml':
+                import toml
+                Config.__config_data = toml.load(file_path)
+            else:
+                raise TypeError(f'File type not supported. [{file_type}]')
+        
+        Config.refresh()
+
+    @staticmethod
+    def refresh(config_data=None):
+        if config_data is not None:
+            Config.__config_data = config_data
+
         Config.__is_init = True
         Config.__init(Config.__config_data, Config.__config_class)
