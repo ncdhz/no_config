@@ -4,3 +4,4 @@ dist
 no_config.egg-info
 build
 .pytest_cache
+.vscode

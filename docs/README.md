@@ -1,6 +1,6 @@
 # no_config
 
-把`yaml`、`json`和`toml`等配置文件映射为类，需要很多`冗余代码`或者`魔术字符串`。这对代码的维护工作提出了更高的要求，[no_config](https://github.com/ncdhz/no_config)能简化这种映射，仅仅需要两行代码即可完成映射。
+把`yaml`、`json`和`toml`等配置文件映射为类，需要很多`冗余代码`或者`魔术字符串`。这对代码的维护工作提出了更高的要求，[no_config](https://github.com/ncdhz/no_config)能简化这种映射，仅仅需要两行代码即可完成映射。更多文档信息请参考[https://ncdhz.github.io/no_config](https://ncdhz.github.io/no_config)。
 
 ## 快速开始
 

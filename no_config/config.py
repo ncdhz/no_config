@@ -89,11 +89,23 @@ class Config:
         return Config.__decorate(clazz, self.__name, self.__type)
 
     @staticmethod
+    def __name_format(name):
+        ns = name[0]
+        for n in name[1:]:
+            if 'A' <= n <= 'Z':
+                ns += f'_{n}'
+            else:
+                ns += n
+        return ns.lower()
+
+    @staticmethod
     def __decorate(clazz, name=None, type=None):
         if name is None:
-            name = clazz.__name__.lower()
+            name = clazz.__name__
 
         names = name.split('.')
+
+        names[0] = Config.__name_format(name[0])
 
         config_class = Config.__config_class
         for name in names:
@@ -108,20 +120,57 @@ class Config:
         return clazz
 
     @staticmethod
-    def init(file_path, file_type='yaml'):
+    def __read_config(file_path, file_type):
         with open(file_path, 'r', encoding='utf-8') as f:
             if file_type == 'yaml':
                 import yaml
-                Config.__config_data = yaml.load(f, Loader=yaml.FullLoader)
+                config = yaml.load(f, Loader=yaml.FullLoader)
             elif file_type == 'json':
                 import json
-                Config.__config_data = json.load(f)
+                config = json.load(f)
             elif file_type == 'toml':
                 import toml
-                Config.__config_data = toml.load(file_path)
+                config = toml.load(file_path)
             else:
                 raise TypeError(f'File type not supported. [{file_type}]')
+        return config
+    
+    @staticmethod
+    def __merge_dict(obj, obj1):
+        if type(obj) == list and type(obj1) == list:
+            obj.extend(obj1)
+        elif type(obj) == dict and type(obj1) == dict:
+            for key in obj1:
+                if key in obj:
+                    obj[key] = Config.__merge_dict(obj[key], obj1[key])
+                else:
+                    obj[key] = obj1[key]
+        else:
+            raise ValueError('Duplicate configuration attributes.')
+        return obj
         
+
+    @staticmethod
+    def init(file_path, file_type='yaml'):
+        if type(file_path) == str:
+            config_data = Config.__read_config(file_path, file_type)
+        elif type(file_path) == list or type(file_path) == tuple:
+            config_data = {}
+            for fp in file_path:
+                if type(fp) == str:
+                    cd = Config.__read_config(fp, file_type)
+                else:
+                    if len(fp) == 1:
+                        cd = Config.__read_config(fp[0], file_type)
+                    else:
+                        cd = Config.__read_config(fp[0], fp[1])
+                config_data = Config.__merge_dict(config_data, cd)
+        
+        for key in config_data:
+            value = config_data.pop(key)
+            config_data[Config.__name_format(key)] = value
+
+        Config.__config_data = config_data
         Config.refresh()
 
     @staticmethod

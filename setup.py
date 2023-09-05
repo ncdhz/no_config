@@ -1,12 +1,12 @@
 import setuptools
-import os
+from os import path
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open(path.join('docs', 'README.md'), 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 about = {}
 
-with open(os.path.join('no_config', '__init__.py'), 'r') as f:
+with open(path.join('no_config', '__init__.py'), 'r') as f:
     exec(f.read(), about)
 
 setuptools.setup(
@@ -23,5 +23,5 @@ setuptools.setup(
         'PyYAML',
         'toml'
     ],
-    packages=setuptools.find_packages(exclude='test')
+    packages=setuptools.find_packages()
 )
