@@ -1,2 +1,5 @@
 recursive-exclude * __pycache__
+recursive-exclude * .pytest_cache 
 recursive-exclude examples *
+recursive-exclude test *
+recursive-exclude docs *
