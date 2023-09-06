@@ -52,7 +52,7 @@
 
 3. 源码文件[examples/tutorial/file_type/file_type.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/file_type/file_type.py)
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
@@ -89,7 +89,7 @@
 
 2. 源码文件[examples/tutorial/multiple_target/multiple_target.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multiple_target/multiple_target.py)
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
@@ -126,7 +126,7 @@
 
 2. 源码文件[examples/tutorial/name/name.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/name/name.py)
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
@@ -156,7 +156,7 @@
 
 2. 源码文件[examples/tutorial/class_inject/class_inject.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/class_inject/class_inject.py)
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
@@ -181,7 +181,7 @@
 
 1. 配置文件[examples/tutorial/type_inject/type_inject.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject.yaml)
 
-    ```py
+    ```python
     app:
         name: class-inject-name
         user:
@@ -190,7 +190,7 @@
 
 2. 源码文件[examples/tutorial/type_inject/type_inject.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject.py)
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
@@ -211,7 +211,7 @@
 
 3. 注入处理
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
@@ -259,7 +259,7 @@
 
 3. 源码文件[examples/tutorial/multifile/multifile.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile.py)
 
-    ```py
+    ```python
     from no_config import Config
     from os import path
 
