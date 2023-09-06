@@ -5,7 +5,27 @@ class Config:
     __is_init = False
     __class = '__class'
 
-    def __init__(self, name=None, type=None):
+    def __init__(self, name:str=None, type:dict=None):
+        '''
+        name: Specify the configuration class mapping name. Multiple levels can be segmented using `.`.
+            ```
+            @Config(name='app.user')
+            class User:
+                password = None
+                username = None
+            ```
+            
+        type: What type of property is specified. 
+            ```
+            class User:
+                username = None
+
+            @Config(type=dict(user=User))
+            class App:
+                name = None
+                user = None
+            ```
+        '''
         self.__name = name
         self.__type = type
 
@@ -152,6 +172,14 @@ class Config:
 
     @staticmethod
     def init(file_path, file_type='yaml'):
+        '''
+        file_path: The file path can be a string or an array.
+            array: [file_path, file_path, [file_path, file_type]]
+            The elements in the array can be strings or arrays.
+            When it is an array, the first element should be the file path, and the second element should be the file type.
+        file_type: Used when the file path is a string or a string in an array.
+            yaml | json | toml
+        '''
         if type(file_path) == str:
             config_data = Config.__read_config(file_path, file_type)
         elif type(file_path) == list or type(file_path) == tuple:
@@ -175,6 +203,9 @@ class Config:
 
     @staticmethod
     def refresh(config_data=None):
+        '''
+        config_data: Configuration data is in a dictionary format.
+        '''
         if config_data is not None:
             Config.__config_data = config_data
 

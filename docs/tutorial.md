@@ -177,7 +177,9 @@
 
 ## 类别注入
 
-1. 配置文件
+> 通过`Config`中的`type`参数可以配置类中某静态属性属于那个实体，其中实体的注入使用的初始化函数。如3注入处理在`username`中添加了`_xxx`字符串（初始化函数参数名应和配置文件一致）。
+
+1. 配置文件[examples/tutorial/type_inject/type_inject.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject.yaml)
 
     ```py
     app:
@@ -186,7 +188,7 @@
             username: ncdhz-class-inject
     ```
 
-2. 源码文件
+2. 源码文件[examples/tutorial/type_inject/type_inject.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject.py)
 
     ```py
     from no_config import Config
@@ -205,4 +207,78 @@
         print(App.name)
         print(App.user.username)
         print(User.username)
+    ```
+
+3. 注入处理
+
+    ```py
+    from no_config import Config
+    from os import path
+
+    class User:
+        def __init__(self, username):
+            username += '_xxx'
+            self.username = username
+
+    @Config(type=dict(user=User))
+    class App:
+        name = None
+        user = None
+
+    if __name__ == '__main__':
+        Config.init(path.join(path.dirname(__file__), 'type_inject.yaml'))
+        print(App.name)
+        print(App.user.username)
+    ```
+
+## 多文件
+
+> 实际生产中配置可能会跨配置文件（可以分为常改配置和非常改配置），下面演示了两种不同配置文件的整合配置。
+
+1. 配置文件一[examples/tutorial/multifile/multifile_one.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile_one.yaml)
+
+    ```yaml
+    user:
+        password: ncdhz-multifile-password
+    app:
+        name: multifile-name
+    ```
+
+2. 配置文件二[examples/tutorial/multifile/multifile_two.json](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile_two.json)
+
+    ```json
+    {
+        "user": {
+            "username": "ncdhz-multifile-username"
+        },
+        "app": {
+            "id": "multifile-id"
+        }
+    }
+    ```
+
+3. 源码文件[examples/tutorial/multifile/multifile.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile.py)
+
+    ```py
+    from no_config import Config
+    from os import path
+
+    @Config()
+    class User:
+        password = None
+        username = None
+
+    @Config()
+    class App:
+        name = None
+        id = None
+
+    if __name__ == '__main__':
+        current_dir = path.dirname(__file__)
+        Config.init([path.join(current_dir, 'multifile_one.yaml'), 
+                    (path.join(current_dir, 'multifile_two.json'), 'json')])
+        print(User.password)
+        print(User.username)
+        print(App.name)
+        print(App.id)
     ```
