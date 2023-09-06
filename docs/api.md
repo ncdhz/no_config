@@ -1,7 +1,7 @@
 ## 修饰器
 
 ```python
-@Config(name, type)
+@Config(name=None, type=None)
 ```
 
 + `name`
