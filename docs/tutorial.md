@@ -115,7 +115,7 @@
 
 > 在`no_config`中，如果不指定名字，默认使用类名的下划线格式，如类名`UserName`对应`user_name`，`User`对应的就是`user`。如下例子可以通过`name`属性设置配置名字，其中`.`表示下一级，`app.user`表示`app`第一级`user`第二级对应的配置，如配置文件所示。
 
-1. 配置文件
+1. 配置文件[examples/tutorial/name/name.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/name/name.yaml)
 
     ```yaml
     app:
@@ -124,7 +124,7 @@
             username: ncdhz-name
     ```
 
-2. 源码文件
+2. 源码文件[examples/tutorial/name/name.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/name/name.py)
 
     ```py
     from no_config import Config
@@ -138,5 +138,71 @@
     if __name__ == '__main__':
         Config.init(path.join(path.dirname(__file__), 'name.yaml'))
         print(User.password)
+        print(User.username)
+    ```
+
+## 实体注入
+
+> 当某个字段是一个实体时，可以通过让字段等于实体的方式注入配置。通过此方式注入的属性都是静态的。
+
+1. 配置文件[examples/tutorial/class_inject/class_inject.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/class_inject/class_inject.yaml)
+
+    ```yaml
+    app:
+        name: class-inject-name
+        user:
+            username: ncdhz-class-inject
+    ```
+
+2. 源码文件[examples/tutorial/class_inject/class_inject.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/class_inject/class_inject.py)
+
+    ```py
+    from no_config import Config
+    from os import path
+
+    class User:
+        username = None
+
+    @Config()
+    class App:
+        name = None
+        user = User
+
+    if __name__ == '__main__':
+        Config.init(path.join(path.dirname(__file__), 'class_inject.yaml'))
+        print(App.name)
+        print(App.user.username)
+        print(User.username)
+    ```
+
+## 类别注入
+
+1. 配置文件
+
+    ```py
+    app:
+        name: class-inject-name
+        user:
+            username: ncdhz-class-inject
+    ```
+
+2. 源码文件
+
+    ```py
+    from no_config import Config
+    from os import path
+
+    class User:
+        username = None
+
+    @Config(type=dict(user=User))
+    class App:
+        name = None
+        user = None
+
+    if __name__ == '__main__':
+        Config.init(path.join(path.dirname(__file__), 'type_inject.yaml'))
+        print(App.name)
+        print(App.user.username)
         print(User.username)
     ```

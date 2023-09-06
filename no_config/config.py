@@ -104,8 +104,8 @@ class Config:
             name = clazz.__name__
 
         names = name.split('.')
-
-        names[0] = Config.__name_format(name[0])
+        
+        names[0] = Config.__name_format(names[0])
 
         config_class = Config.__config_class
         for name in names:
@@ -166,7 +166,7 @@ class Config:
                         cd = Config.__read_config(fp[0], fp[1])
                 config_data = Config.__merge_dict(config_data, cd)
         
-        for key in config_data:
+        for key in list(config_data.keys()):
             value = config_data.pop(key)
             config_data[Config.__name_format(key)] = value
 
