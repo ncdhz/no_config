@@ -1,4 +1,4 @@
-# no_config <small>0.0.1</small>
+# no_config <small>0.0.2</small>
 
 > Simple configuration handling in Python.
 

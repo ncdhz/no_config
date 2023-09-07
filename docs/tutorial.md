@@ -183,9 +183,9 @@
 
     ```python
     app:
-        name: class-inject-name
+        name: type-inject-name
         user:
-            username: ncdhz-class-inject
+            username: ncdhz-type-inject
     ```
 
 2. 源码文件[examples/tutorial/type_inject/type_inject.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject.py)
@@ -209,7 +209,9 @@
         print(User.username)
     ```
 
-3. 注入处理
+3. 注入处理[examples/tutorial/type_inject/type_inject_handle.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject_handle.py)
+
+    > 类别注入中可以通过初始化函数对注入的配置进行处理。
 
     ```python
     from no_config import Config
@@ -230,6 +232,37 @@
         print(App.name)
         print(App.user.username)
     ```
+
+4. 注入方法
+
+    > 如果你想对某个属性进行处理，那么你可以在`type`中给它指定一个处理函数。
+
+    + 配置文件[examples/tutorial/type_inject/type_inject_func.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject_func.yaml)
+
+        ```yaml
+        app:
+            name: type-inject-name
+        ```
+    
+    + 源码文件[examples/tutorial/type_inject/type_inject_func.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject_func.py)
+    
+        ```python
+        from no_config import Config
+        from os import path
+
+        def split_name(name):
+            return name.split('-')
+
+        @Config(type=dict(name=split_name))
+        class App:
+            name = None
+
+        if __name__ == '__main__':
+            Config.init(path.join(path.dirname(__file__), 'type_inject_func.yaml'))
+            print(App.name)
+        ```
+
+
 
 ## 多文件
 

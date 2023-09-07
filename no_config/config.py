@@ -77,6 +77,8 @@ class Config:
 
     @staticmethod
     def __init_obj(obj, paras):
+        if type(paras) is not dict:
+            return obj(paras)
         ps = {}
         no_ps = {}
         try:
