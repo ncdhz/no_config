@@ -1,5 +1,5 @@
 __py*
-test
+test*
 dist
 no_config.egg-info
 build

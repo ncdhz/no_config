@@ -1,3 +1,6 @@
+import types
+
+
 class Config:
 
     __config_data = {}
@@ -58,7 +61,7 @@ class Config:
         for key in config:
             if key in clazz.__dict__:
                 value = clazz.__dict__[key]
-                if type(value) not in set([list, str, int, dict, float]) and value is not None and key not in type_:
+                if type(value) not in set([list, str, int, dict, float, tuple]) and value is not None and key not in type_:
                     try:
                         Config.__input(config[key], value, {})
                     except:
@@ -158,7 +161,7 @@ class Config:
         return config
     
     @staticmethod
-    def __merge_dict(obj, obj1):
+    def __merge_dict(obj, obj1, refresh=False):
         if type(obj) == list and type(obj1) == list:
             obj.extend(obj1)
         elif type(obj) == dict and type(obj1) == dict:
@@ -168,12 +171,14 @@ class Config:
                 else:
                     obj[key] = obj1[key]
         else:
+            if refresh:
+                return obj1
             raise ValueError('Duplicate configuration attributes.')
         return obj
         
 
     @staticmethod
-    def init(file_path, file_type='yaml'):
+    def init(file_path, file_type='yaml', merge=False):
         '''
         file_path: The file path can be a string or an array.
             array: [file_path, file_path, [file_path, file_type]]
@@ -181,6 +186,7 @@ class Config:
             When it is an array, the first element should be the file path, and the second element should be the file type.
         file_type: Used when the file path is a string or a string in an array.
             yaml | json | toml
+        merge: Merge new and existing configurations.
         '''
         if type(file_path) == str:
             config_data = Config.__read_config(file_path, file_type)
@@ -200,16 +206,84 @@ class Config:
             value = config_data.pop(key)
             config_data[Config.__name_format(key)] = value
 
-        Config.__config_data = config_data
-        Config.refresh()
+        Config.refresh(config_data, merge)
 
     @staticmethod
-    def refresh(config_data=None):
+    def refresh(config_data=None, merge=False):
         '''
         config_data: Configuration data is in a dictionary format.
+        merge: Merge new and existing configurations.
         '''
         if config_data is not None:
-            Config.__config_data = config_data
+            if merge:
+                Config.__config_data = Config.__merge_dict(Config.__config_data, config_data, True)
+            else:
+                Config.__config_data = config_data
 
         Config.__is_init = True
-        Config.__init(Config.__config_data, Config.__config_class)
+        if merge:
+            if config_data is None:
+                raise TypeError('[merge] is True, [config_data] cannot be empty')
+            Config.__init(config_data, Config.__config_class)
+        else:
+            Config.__init(Config.__config_data, Config.__config_class)
+
+    @staticmethod
+    def get_config():
+        '''
+        return: Read configuration file.
+        '''
+        return Config.__config_data
+
+    @staticmethod
+    def get_all_config():
+        '''
+        return: All configuration files.
+        '''
+        def __get_all_config(data, is_clazz):
+            result = {}
+            if is_clazz:
+                params = vars(data)
+                for k in params:
+                    if not k.startswith('__') and not k.endswith('__') and type(params[k]) not in {types.FunctionType, staticmethod}:
+                        try:
+                            vars(params[k])
+                            result[k] = __get_all_config(params[k], True)
+                        except:
+                            result[k] = params[k]
+            else:
+                for key in data:
+                    if key == Config.__class:
+                        result.update(__get_all_config(data[key][0], True))
+                    else:
+                        result[key] = __get_all_config(data[key], False)
+            return result
+
+        return __get_all_config(Config.__config_class, False)
+
+    @staticmethod
+    def save(file_path=None, file_type='yaml', **kwargs):
+        '''
+        file_path: Specify the save path, default to uuid.
+        file_type: File type, default to yaml.
+            yaml | json | toml
+        kwargs: Other saved parameters.
+        '''
+        if file_path is None:
+            from uuid import uuid1
+            file_path = f'{uuid1()}.{file_type}'
+        
+        if file_type not in {'yaml', 'json', 'toml'}:
+            raise TypeError(f'File type not supported. [{file_type}]')
+        
+        data = Config.get_all_config()
+        with open(file_path, 'w', encoding='utf-8') as f:
+            if file_type == 'yaml':
+                import yaml
+                yaml.dump(data, f, **kwargs)
+            elif file_type == 'json':
+                import json
+                json.dump(data, f, **kwargs)
+            else:
+                import toml
+                toml.dump(data, f, **kwargs)

@@ -29,7 +29,7 @@
 ## 初始化
 
 ```python
-Config.init(file_path, file_type='yaml')
+Config.init(file_path, file_type='yaml', merge=False)
 ```
 
 + `file_path` 文件路径，字符串或者数组。
@@ -42,10 +42,41 @@ Config.init(file_path, file_type='yaml')
 
 + `file_type` 文件类型，当文件路径中没有指定类型时使用。可选参数`yaml`、`json`和`toml`。
 
++ `merge` 是否合并新和原有配置。
+
 ## 刷新
 
 ```python
-Config.refresh(config_data=None)
+Config.refresh(config_data=None, merge=False)
 ```
 
 + `config_data` 配置数据，字典格式，可以读取配置文件通过此函数刷新配置。
+
++ `merge` 是否合并新和原有配置。
+
+## 获取配置
+
+```python
+Config.get_config()
+```
+> 获取映射的配置文件。
+
+## 获取所有配置
+
+```python
+Config.get_all_config()
+```
+
+> 获取所有配置文件。
+
+## 保存配置
+
+```python
+Config.save(file_path=None, file_type='yaml', **kwargs)
+```
+
++ `file_path` 保存文件的路径，默认使用`uuid1`命名。
+
++ `file_type` 文件类型，默认`yaml`。可选参数`yaml`、`json`和`toml`。
+
++ `**kwargs` 其它参数，如保存成`json`时，`json.dump`的参数。
