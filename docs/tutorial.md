@@ -243,9 +243,9 @@
         app:
             name: type-inject-name
         ```
-    
+
     + 源码文件[examples/tutorial/type_inject/type_inject_func.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject_func.py)
-    
+
         ```python
         from no_config import Config
         from os import path
@@ -261,8 +261,6 @@
             Config.init(path.join(path.dirname(__file__), 'type_inject_func.yaml'))
             print(App.name)
         ```
-
-
 
 ## 多个文件
 

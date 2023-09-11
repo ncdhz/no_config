@@ -61,7 +61,7 @@ class Config:
         for key in config:
             if key in clazz.__dict__:
                 value = clazz.__dict__[key]
-                if type(value) not in set([list, str, int, dict, float, tuple]) and value is not None and key not in type_:
+                if type(value) not in set([list, str, int, dict, float, tuple, bool, set]) and value is not None and key not in type_:
                     try:
                         Config.__input(config[key], value, {})
                     except:
