@@ -162,9 +162,14 @@ class Config:
     
     @staticmethod
     def __merge_dict(obj, obj1, refresh=False):
-        if type(obj) == list and type(obj1) == list:
+        obj_type = type(obj)
+        obj1_type = type(obj1)
+
+        if obj_type == list and obj1_type == list:
             obj.extend(obj1)
-        elif type(obj) == dict and type(obj1) == dict:
+        elif obj_type == set and obj1_type == set:
+            obj.update(obj1)
+        elif obj_type == dict and obj1_type == dict:
             for key in obj1:
                 if key in obj:
                     obj[key] = Config.__merge_dict(obj[key], obj1[key])
