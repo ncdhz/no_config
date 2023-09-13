@@ -61,13 +61,22 @@ class Config:
         for key in config:
             if key in clazz.__dict__:
                 value = clazz.__dict__[key]
-                if type(value) not in set([list, str, int, dict, float, tuple, bool, set]) and value is not None and key not in type_:
+                try:
+                    vars(value)
                     try:
-                        Config.__input(config[key], value, {})
+                        if type(value) in {types.FunctionType, types.MethodType}:
+                            config_value = config[key]
+                            if type(config_value) is dict:
+                                data = value(**config_value)
+                            else:
+                                data = value(config_value)
+                            exec(f'clazz.{key}=data')
+                        else:
+                            Config.__input(config[key], value, {})
                     except:
                         raise ValueError(
                             f'[class: {clazz}] [config: {config}] [key: {key}] config error.')
-                else:
+                except TypeError:
                     data = config[key]
                     if key in type_:
                         config_value = config[key]
@@ -80,8 +89,10 @@ class Config:
 
     @staticmethod
     def __init_obj(obj, paras):
+        
         if type(paras) is not dict:
             return obj(paras)
+        
         ps = {}
         no_ps = {}
         try:
@@ -158,7 +169,7 @@ class Config:
                 config = toml.load(file_path)
             else:
                 raise TypeError(f'File type not supported. [{file_type}]')
-        return config
+        return config if config else {}
     
     @staticmethod
     def __merge_dict(obj, obj1, refresh=False):
