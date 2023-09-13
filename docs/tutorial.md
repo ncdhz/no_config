@@ -175,6 +175,35 @@
         print(User.username)
     ```
 
+## 方法注入
+
+> 需要对配置信息进行处理时可以直接指定一个方法。
+
+1. 配置文件[examples/tutorial/function_inject/function_inject.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/function_inject/function_inject.yaml)
+
+    ```yaml
+    app:
+        name: function-inject-name
+    ```
+
+2. 源码文件[examples/tutorial/function_inject/function_inject.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/function_inject/function_inject.py)
+
+    ```python
+    from no_config import Config
+    from os import path
+
+    def analysis(name):
+        return name.split('-')
+
+    @Config()
+    class App:
+        name = analysis
+
+    if __name__ == '__main__':
+        Config.init(path.join(path.dirname(__file__), 'function_inject.yaml'))
+        print(App.name)
+    ```
+
 ## 类别注入
 
 > 通过`Config`中的`type`参数可以配置类中某静态属性属于那个实体，其中实体的注入使用的初始化函数。如3注入处理在`username`中添加了`_xxx`字符串（初始化函数参数名应和配置文件一致）。
