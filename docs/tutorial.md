@@ -210,7 +210,7 @@
 
 1. 配置文件[examples/tutorial/type_inject/type_inject.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject.yaml)
 
-    ```python
+    ```yaml
     app:
         name: type-inject-name
         user:
