@@ -1,5 +1,10 @@
 __py*
-test*
+test.py
+test
+test.yaml
+config.yaml
+config.toml
+config.json
 dist
 no_config.egg-info
 build

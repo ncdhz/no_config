@@ -262,7 +262,31 @@
         print(App.user.username)
     ```
 
-4. 注入方法
+4. 属性注入[examples/tutorial/type_inject/type_inject_attribute.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_inject/type_inject_attribute.py)
+    
+    > 属性注入指配置文件中所有值都会映射到`self`下面。
+
+    ```python
+    from no_config import Config
+    from os import path
+
+    class User:
+        pass
+
+    @Config(type=dict(user=User))
+    class App:
+        name = None
+        user = None
+
+    if __name__ == '__main__':
+        Config.init(path.join(path.dirname(__file__), 'type_inject.yaml'))
+        print(App.name)
+        # 这里username任然会注入成功
+        print(App.user.username)
+    ```
+
+
+5. 注入方法
 
     > 如果你想对某个属性进行处理，那么你可以在`type`中给它指定一个处理函数。
 

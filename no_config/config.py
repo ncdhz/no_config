@@ -65,11 +65,7 @@ class Config:
                     vars(value)
                     try:
                         if type(value) in {types.FunctionType, types.MethodType}:
-                            config_value = config[key]
-                            if type(config_value) is dict:
-                                data = value(**config_value)
-                            else:
-                                data = value(config_value)
+                            data = Config.__init_obj(value, config[key])
                             exec(f'clazz.{key}=data')
                         else:
                             Config.__input(config[key], value, {})
@@ -79,12 +75,11 @@ class Config:
                 except TypeError:
                     data = config[key]
                     if key in type_:
-                        config_value = config[key]
-                        if type(config_value) is list:
+                        if type(data) is list:
                             data = [Config.__init_obj(
-                                type_[key], cv) for cv in config_value]
+                                type_[key], cv) for cv in data]
                         else:
-                            data = Config.__init_obj(type_[key], config[key])
+                            data = Config.__init_obj(type_[key], data)
                     exec(f'clazz.{key}=data')
 
     @staticmethod
@@ -94,21 +89,28 @@ class Config:
             return obj(paras)
         
         ps = {}
-        no_ps = {}
-        try:
-            co_varnames = obj.__init__.__code__.co_varnames
-            for key in paras:
-                if key in co_varnames:
-                    ps[key] = paras[key]
-                else:
-                    no_ps[key] = paras[key]
-        except:
-            no_ps = paras
+
+        if type(obj) in {types.FunctionType, types.MethodType}:
+            co_varnames = obj.__code__.co_varnames
+        else:
+            try:
+                co_varnames = obj.__init__.__code__.co_varnames
+            except:
+                co_varnames = {}
+
+        for key in paras:
+            if key in co_varnames:
+                ps[key] = paras[key]
 
         new_ = obj(**ps)
 
-        for key in no_ps:
-            exec(f'new_.{key}=no_ps[key]')
+        try:
+            dict_ = vars(new_)
+            for key in paras:
+                if key not in dict_:
+                    exec(f'new_.{key}=paras[key]')
+        except:
+            pass
 
         return new_
 
