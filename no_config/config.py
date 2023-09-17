@@ -1,5 +1,6 @@
 import types
-
+import inspect
+from .inject import Inject
 
 class Config:
 
@@ -64,7 +65,7 @@ class Config:
                 try:
                     vars(value)
                     try:
-                        if type(value) in {types.FunctionType, types.MethodType}:
+                        if type(value) in {types.FunctionType, types.MethodType, Inject}:
                             data = Config.__init_obj(value, config[key])
                             exec(f'clazz.{key}=data')
                         else:
@@ -89,17 +90,13 @@ class Config:
             return obj(paras)
         
         ps = {}
-
-        if type(obj) in {types.FunctionType, types.MethodType}:
-            co_varnames = obj.__code__.co_varnames
+        if type(obj) == Inject:
+            args = obj.args
         else:
-            try:
-                co_varnames = obj.__init__.__code__.co_varnames
-            except:
-                co_varnames = {}
-
+            args = inspect.getfullargspec(obj).args
+        
         for key in paras:
-            if key in co_varnames:
+            if key in args:
                 ps[key] = paras[key]
 
         new_ = obj(**ps)
@@ -194,7 +191,6 @@ class Config:
             raise ValueError('Duplicate configuration attributes.')
         return obj
         
-
     @staticmethod
     def init(file_path, file_type='yaml', merge=False):
         '''
@@ -305,3 +301,7 @@ class Config:
             else:
                 import toml
                 toml.dump(data, f, **kwargs)
+
+    @staticmethod
+    def inject(obj=None, **kwargs):
+        return Inject(obj=obj, **kwargs)
