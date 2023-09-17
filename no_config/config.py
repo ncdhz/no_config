@@ -304,4 +304,21 @@ class Config:
 
     @staticmethod
     def inject(obj=None, **kwargs):
+        '''
+        This is the invocation method of the inject decorator provided in Config.
+        obj: Classes that need to be injected.
+        kwargs: Other parameters.
+        ____________________________________
+        Use:
+            from no_config import Config
+
+            @Config.inject
+            class User:
+                def __init__(name):
+                    pass
+            
+            if __name__ == '__main__':
+                user = User('ncdhz')  
+                print(user.name)  
+        '''
         return Inject(obj=obj, **kwargs)

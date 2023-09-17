@@ -1,4 +1,4 @@
-## 修饰器
+## @Config
 
 ```python
 @Config(name=None, type=None)
@@ -59,6 +59,7 @@ Config.refresh(config_data=None, merge=False)
 ```python
 Config.get_config()
 ```
+
 > 获取映射的配置文件。
 
 ## 获取所有配置
@@ -80,3 +81,11 @@ Config.save(file_path=None, file_type='yaml', **kwargs)
 + `file_type` 文件类型，默认`yaml`。可选参数`yaml`、`json`和`toml`。
 
 + `**kwargs` 其它参数，如保存成`json`时，`json.dump`的参数。
+
+## 参数注入
+
+```python
+@Config.inject
+```
+
+> 这是一个注入修饰器，详细信息见[@Inject](./inject_tutorial.md) 

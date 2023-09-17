@@ -4,13 +4,13 @@ from os import path
 class User:
     username = None
 
-@Config(type=dict(user=User))
+@Config()
 class App:
     name = None
-    user = None
+    user = User
 
 if __name__ == '__main__':
-    Config.init(path.join(path.dirname(__file__), 'type_inject.yaml'))
+    Config.init(path.join(path.dirname(__file__), 'class_mapper.yaml'))
     print(App.name)
     print(App.user.username)
     print(User.username)

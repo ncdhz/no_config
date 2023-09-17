@@ -8,6 +8,6 @@ class User:
     username = None
 
 if __name__ == '__main__':
-    Config.init(path.join(path.dirname(__file__), 'base.yaml'))
+    Config.init(path.join(path.dirname(__file__), 'start.yaml'))
     print(User.password)
     print(User.username)

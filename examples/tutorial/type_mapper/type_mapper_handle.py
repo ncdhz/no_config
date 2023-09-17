@@ -12,6 +12,6 @@ class App:
     user = None
 
 if __name__ == '__main__':
-    Config.init(path.join(path.dirname(__file__), 'type_inject.yaml'))
+    Config.init(path.join(path.dirname(__file__), 'type_mapper.yaml'))
     print(App.name)
     print(App.user.username)

@@ -1,9 +1,20 @@
 import inspect
-import types
 
 
 class Inject:
+    '''
+    Use:
+        from no_config import Inject
 
+        @Inject
+        class User:
+            def __init__(name):
+                pass
+        
+        if __name__ == '__main__':
+            user = User('ncdhz')  
+            print(user.name)
+    '''
     def __init__(self, obj=None, **kwargs):
         self.__obj = obj
         self.__kwargs = kwargs

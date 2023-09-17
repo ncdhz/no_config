@@ -2,7 +2,7 @@ from no_config import Config
 from os import path
 
 class User:
-    pass
+    username = None
 
 @Config(type=dict(user=User))
 class App:
@@ -10,7 +10,7 @@ class App:
     user = None
 
 if __name__ == '__main__':
-    Config.init(path.join(path.dirname(__file__), 'type_inject.yaml'))
+    Config.init(path.join(path.dirname(__file__), 'type_mapper.yaml'))
     print(App.name)
-    # 这里username任然会注入成功
     print(App.user.username)
+    print(User.username)
