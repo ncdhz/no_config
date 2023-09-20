@@ -5,7 +5,7 @@ class User:
     def __init__(self, username, password):
         pass
 
-@Inject(user=User)
+@Inject(type=dict(user=User))
 class App:
     def __init__(self, id, user):
         pass

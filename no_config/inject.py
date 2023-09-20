@@ -15,9 +15,10 @@ class Inject:
             user = User('ncdhz')  
             print(user.name)
     '''
-    def __init__(self, obj=None, **kwargs):
+    def __init__(self, obj=None, config_inject:str=None, type:dict=None):
         self.__obj = obj
-        self.__kwargs = kwargs
+        self.__type = type
+        self.__config_inject = config_inject if config_inject else 'config_inject'
         self.__fullargspec()
 
     def __fullargspec(self):
@@ -37,15 +38,24 @@ class Inject:
         for key in self.args_defaults:
             if key not in kwargs:
                 kwargs[key] = self.args_defaults[key]
+        
+        if self.__config_inject in kwargs:
+            config = kwargs[self.__config_inject]
+            kwargs.pop(self.__config_inject)
+            for key in config:
+                kwargs[key] = config[key]
 
-        for key in kwargs:
-            value = kwargs[key]
-            __value = self.__kwargs.get(key)
-            if __value:
-                if type(value) is dict:
-                    kwargs[key] = __value(**value)
-                else:
-                    kwargs[key] = __value(value)
+        if self.__type and type(self.__type) == dict:
+            for key in kwargs:
+                value = kwargs[key]
+                __value = self.__type.get(key)
+                if __value:
+                    if type(value) is dict:
+                        kwargs[key] = __value(**value)
+                    elif type(__value) is list and len(__value) > 0:
+                        kwargs[key] = [__value[0](**v) if type(v) is dict else __value[0](v) for v in value]
+                    else:
+                        kwargs[key] = __value(value)
 
         o = self.__obj(**kwargs)
         try:

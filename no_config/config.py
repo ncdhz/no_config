@@ -76,9 +76,9 @@ class Config:
                 except TypeError:
                     data = config[key]
                     if key in type_:
-                        if type(data) is list:
-                            data = [Config.__init_obj(
-                                type_[key], cv) for cv in data]
+                        type_value = type_[key]
+                        if type(type_value) is list and len(type_value) > 0:
+                            data = [Config.__init_obj(type_value[0], cv) for cv in data]
                         else:
                             data = Config.__init_obj(type_[key], data)
                     exec(f'clazz.{key}=data')
