@@ -192,7 +192,7 @@ class Config:
         return obj
         
     @staticmethod
-    def init(file_path, file_type='yaml', merge=False):
+    def init(file_path, file_type='yaml', config_path=None, merge=False):
         '''
         file_path: The file path can be a string or an array.
             array: [file_path, file_path, [file_path, file_type]]
@@ -303,11 +303,13 @@ class Config:
                 toml.dump(data, f, **kwargs)
 
     @staticmethod
-    def inject(obj=None, **kwargs):
+    def inject(obj=None, config_inject:str=None, type:dict=None):
         '''
         This is the invocation method of the inject decorator provided in Config.
         obj: Classes that need to be injected.
-        kwargs: Other parameters.
+        config_inject: Specify the name of the injection dictionary. Default to config_inject.
+        type: Define the types of parameters that need to be injected.
+            e.g. type=dict(user=User) The type of user is User.
         ____________________________________
         Use:
             from no_config import Config
@@ -321,4 +323,4 @@ class Config:
                 user = User('ncdhz')  
                 print(user.name)  
         '''
-        return Inject(obj=obj, **kwargs)
+        return Inject(obj=obj, config_inject=config_inject, type=type)

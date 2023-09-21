@@ -16,6 +16,12 @@ class Inject:
             print(user.name)
     '''
     def __init__(self, obj=None, config_inject:str=None, type:dict=None):
+        '''
+        obj: Classes that need to be injected.
+        config_inject: Specify the name of the injection dictionary. Default to config_inject.
+        type: Define the types of parameters that need to be injected.
+            e.g. type=dict(user=User) The type of user is User.
+        '''
         self.__obj = obj
         self.__type = type
         self.__config_inject = config_inject if config_inject else 'config_inject'
@@ -75,6 +81,3 @@ class Inject:
             self.__fullargspec()
             return self.__handle
         return self.__handle(*args, **kwargs)
-
-        
-
