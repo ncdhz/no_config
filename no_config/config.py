@@ -6,8 +6,12 @@ class Config:
 
     __config_data = {}
     __config_class = {}
-    __is_init = False
     __class = '__class'
+    
+    timeout = 2
+    file_path = 'path'
+    file_url = 'url'
+    file_type = 'type'
 
     def __init__(self, name:str=None, type:dict=None):
         '''
@@ -149,29 +153,39 @@ class Config:
         type_ = type if type else {}
         config_class[Config.__class] = (clazz, type_)
 
-        if Config.__is_init:
-            Config.__init_class(names, clazz, type_)
+        Config.__init_class(names, clazz, type_)
 
         return clazz
 
     @staticmethod
-    def __read_config(file_path, file_type):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            if file_type == 'yaml':
-                import yaml
-                config = yaml.load(f, Loader=yaml.FullLoader)
-            elif file_type == 'json':
-                import json
-                config = json.load(f)
-            elif file_type == 'toml':
-                import toml
-                config = toml.load(file_path)
-            else:
-                raise TypeError(f'File type not supported. [{file_type}]')
-        return config if config else {}
-    
+    def __read_config(file_path=None, file_type=None, url=False):
+        if file_path is None:
+            return {}
+        if url:
+            import requests
+            try:
+                data = requests.get(file_path, timeout=Config.timeout).text
+            except:
+                raise TimeoutError(f'Request timeout. [{file_path}]')
+        else:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = f.read()
+
+        if file_type == 'yaml':
+            import yaml
+            config = yaml.load(data, Loader=yaml.FullLoader)
+        elif file_type == 'json':
+            import json
+            config = json.loads(data)
+        elif file_type == 'toml':
+            import toml
+            config = toml.loads(data)
+        else:
+            raise TypeError(f'File type not supported. [{file_type}]')
+        return config
+
     @staticmethod
-    def __merge_dict(obj, obj1, refresh=False):
+    def __merge_dict(obj, obj1, cover=False):
         obj_type = type(obj)
         obj1_type = type(obj1)
 
@@ -186,40 +200,88 @@ class Config:
                 else:
                     obj[key] = obj1[key]
         else:
-            if refresh:
+            if cover:
                 return obj1
             raise ValueError('Duplicate configuration attributes.')
         return obj
-        
+
+
+
     @staticmethod
-    def init(file_path, file_type='yaml', config_path=None, merge=False):
+    def __file_analysis(file_path, file_type, cover):
+        def file_analysis(file_path_):
+            if type(file_path_) == str:
+                config_data = Config.__read_config(file_path_, file_type)
+            elif type(file_path_) == dict:
+                file_type_ = file_path_.get(Config.file_type)
+                file_type_ = file_type_ if file_type_ else file_type
+                config_data = Config.__read_config(file_path_.get(Config.file_path), file_type_)
+                config_data = Config.__merge_dict(config_data, 
+                                                  Config.__read_config(file_path_.get(Config.file_url), file_type_, True), cover)
+            else:
+                raise ValueError(f'File_path structure error. [{file_path_}]')
+            return config_data
+
+        if file_path is None:
+            return {}
+        
+        if type(file_path) in {str, dict}:
+            config_data = file_analysis(file_path)
+        elif type(file_path) in {list, tuple, set}:
+            config_data = {}
+            for fp in file_path:
+                config_data = Config.__merge_dict(config_data, file_analysis(fp), cover)
+        else:
+            raise ValueError(f'File_path structure error. [{file_path}]')
+        
+        return config_data
+
+    @staticmethod
+    def init(file_path, file_type='yaml', merge=False, config_path=None, cover=False):
         '''
-        file_path: The file path can be a string or an array.
-            array: [file_path, file_path, [file_path, file_type]]
-            The elements in the array can be strings or arrays.
-            When it is an array, the first element should be the file path, and the second element should be the file type.
+        file_path: The file path is a string, array, or dictionary.
+            str:
+                Local path.
+            dict:
+                {
+                    path: None or str,
+                    url: None or str, 
+                    type: file type [yaml | json | toml]
+                }
+                path:
+                    Local path.
+                url:
+                    Remote URL.
+                type:
+                    File type.
+            array: 
+                [str, dict, dict, str]
+                The elements in the array can be strings or dictionaries.
         file_type: Used when the file path is a string or a string in an array.
             yaml | json | toml
         merge: Merge new and existing configurations.
+        config_path: The configuration path is used to find other configuration files.
+        cover: The subsequent configuration file will overwrite the previous configuration.
         '''
-        if type(file_path) == str:
-            config_data = Config.__read_config(file_path, file_type)
-        elif type(file_path) == list or type(file_path) == tuple:
-            config_data = {}
-            for fp in file_path:
-                if type(fp) == str:
-                    cd = Config.__read_config(fp, file_type)
-                else:
-                    if len(fp) == 1:
-                        cd = Config.__read_config(fp[0], file_type)
-                    else:
-                        cd = Config.__read_config(fp[0], fp[1])
-                config_data = Config.__merge_dict(config_data, cd)
+        config_data = Config.__file_analysis(file_path, file_type, cover)
         
         for key in list(config_data.keys()):
             value = config_data.pop(key)
             config_data[Config.__name_format(key)] = value
 
+        if config_path:
+            config_path = config_path.split('.')
+            config_path[0] = Config.__name_format(config_path[0])
+            
+            config_msg = config_data
+            for path_ in config_path:
+                config_msg = config_msg.get(path_)
+                if config_msg is None:
+                    break
+            
+            config_data = Config.__merge_dict(config_data, 
+                                              Config.__file_analysis(config_msg, file_type, cover), cover)
+            
         Config.refresh(config_data, merge)
 
     @staticmethod
@@ -234,7 +296,6 @@ class Config:
             else:
                 Config.__config_data = config_data
 
-        Config.__is_init = True
         if merge:
             if config_data is None:
                 raise TypeError('[merge] is True, [config_data] cannot be empty')
