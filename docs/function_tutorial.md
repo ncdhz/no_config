@@ -1,6 +1,6 @@
 ## 多个文件
 
-> 实际生产中配置可能会跨配置文件（可以分为常改配置和非常改配置），下面演示了两种不同配置文件的整合配置。
+> 实际生产中配置可能会跨配置文件（可以分为固定配置和变化配置），下面演示了两种不同配置文件的整合配置。
 
 1. 配置文件一[examples/tutorial/multifile/multifile_one.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile_one.yaml)
 
@@ -43,7 +43,7 @@
     if __name__ == '__main__':
         current_dir = path.dirname(__file__)
         Config.init([path.join(current_dir, 'multifile_one.yaml'), 
-                    (path.join(current_dir, 'multifile_two.json'), 'json')])
+                     dict(path=path.join(current_dir, 'multifile_two.json'), type='json')])
         print(User.password)
         print(User.username)
         print(App.name)
@@ -82,7 +82,7 @@
 
 ## 刷新配置
 
-> 直接刷新配置不会合并，而会替换所有配置。使用参数`merge=True`可以保存已经映射的配置。
+> 直接刷新配置不会合并，而会替换所有配置。使用参数`merge=True`可以保存已经存在的配置，并对配置进行刷新。
 
 1. 配置文件[examples/tutorial/refresh/refresh.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/refresh/refresh.yaml)
 
@@ -113,7 +113,7 @@
         print(Config.get_config())
     ```
 
-3. 合并配置[examples/tutorial/refresh/refresh_merge.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/refresh/refresh_merge.py)
+3. 覆盖配置[examples/tutorial/refresh/refresh_cover.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/refresh/refresh_cover.py)
 
     ```python
     from no_config import Config
@@ -131,7 +131,7 @@
             'user': {
                 'password': 'password'
             }
-        }, merge=True)
+        }, cover=True)
         print(Config.get_config())
     ```
 

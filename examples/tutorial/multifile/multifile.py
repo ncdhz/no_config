@@ -14,7 +14,7 @@ class App:
 if __name__ == '__main__':
     current_dir = path.dirname(__file__)
     Config.init([path.join(current_dir, 'multifile_one.yaml'), 
-                 (path.join(current_dir, 'multifile_two.json'), 'json')])
+                 dict(path=path.join(current_dir, 'multifile_two.json'), type='json')])
     print(User.password)
     print(User.username)
     print(App.name)

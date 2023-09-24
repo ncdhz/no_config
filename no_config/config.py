@@ -237,7 +237,7 @@ class Config:
         return config_data
 
     @staticmethod
-    def init(file_path, file_type='yaml', merge=False, config_path=None, cover=False):
+    def init(file_path, file_type='yaml', config_path=None, cover=False):
         '''
         file_path: The file path is a string, array, or dictionary.
             str:
@@ -259,7 +259,6 @@ class Config:
                 The elements in the array can be strings or dictionaries.
         file_type: Used when the file path is a string or a string in an array.
             yaml | json | toml
-        merge: Merge new and existing configurations.
         config_path: The configuration path is used to find other configuration files.
         cover: The subsequent configuration file will overwrite the previous configuration.
         '''
@@ -282,23 +281,23 @@ class Config:
             config_data = Config.__merge_dict(config_data, 
                                               Config.__file_analysis(config_msg, file_type, cover), cover)
             
-        Config.refresh(config_data, merge)
+        Config.refresh(config_data, cover)
 
     @staticmethod
-    def refresh(config_data=None, merge=False):
+    def refresh(config_data=None, cover=False):
         '''
         config_data: Configuration data is in a dictionary format.
-        merge: Merge new and existing configurations.
+        cover: Cover new and existing configurations.
         '''
         if config_data is not None:
-            if merge:
-                Config.__config_data = Config.__merge_dict(Config.__config_data, config_data, True)
+            if cover:
+                Config.__config_data = Config.__merge_dict(Config.__config_data, config_data, cover)
             else:
                 Config.__config_data = config_data
 
-        if merge:
+        if cover:
             if config_data is None:
-                raise TypeError('[merge] is True, [config_data] cannot be empty')
+                raise TypeError('[Cover] is True, [config_data] cannot be empty')
             Config.__init(config_data, Config.__config_class)
         else:
             Config.__init(Config.__config_data, Config.__config_class)

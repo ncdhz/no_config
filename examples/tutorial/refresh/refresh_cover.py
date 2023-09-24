@@ -13,5 +13,5 @@ if __name__ == '__main__':
         'user': {
             'password': 'password'
         }
-    }, merge=True)
+    }, cover=True)
     print(Config.get_config())
