@@ -44,7 +44,7 @@ Config.init(file_path, file_type='yaml', config_path=None, cover=False)
         }
         ```
 
-    + 当为数组时每一个元素可以是字符串或者字典，为字符串表示本地文件路径，为字典格式和`2`相同。
+    + 当为数组时每一个元素可以是字符串或者字典，为字符串表示本地文件路径，为字典格式与上述相同。
 
         ```python
         ['file_path', {'path': str | None, 'url': str | None, 'type': str | None}, 'file_path']
@@ -60,7 +60,7 @@ Config.init(file_path, file_type='yaml', config_path=None, cover=False)
 Config.refresh(config_data=None, cover=False)
 ```
 
-> 对部分配置进行更改时使用，详情见[刷新配置](./function_tutorial?id=刷新配置)。
+> 对部分配置进行更改时使用，详细信息见[刷新配置](./function_tutorial?id=刷新配置)。
 
 + `config_data` 配置数据，字典格式，可以读取配置文件通过此函数刷新配置。
 
@@ -72,7 +72,7 @@ Config.refresh(config_data=None, cover=False)
 Config.get_config()
 ```
 
-> 获取映射的配置文件，详情见[获取配置](./function_tutorial?id=获取配置)。
+> 获取映射的配置文件，详细信息见[获取配置](./function_tutorial?id=获取配置)。
 
 ## 获取所有配置
 
@@ -80,7 +80,7 @@ Config.get_config()
 Config.get_all_config()
 ```
 
-> 获取所有配置文件，详情见[获取配置](./function_tutorial?id=获取配置)。
+> 获取所有配置文件，详细信息见[获取配置](./function_tutorial?id=获取配置)。
 
 ## 保存配置
 
@@ -100,4 +100,4 @@ Config.save(file_path=None, file_type='yaml', **kwargs)
 @Config.inject
 ```
 
-> 这是一个注入修饰器，详细信息见[@Inject](./inject_tutorial.md) 
+> 这是一个注入修饰器，详细信息见[@Inject](./inject_tutorial.md)。

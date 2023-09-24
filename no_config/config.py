@@ -1,5 +1,6 @@
 import types
 import inspect
+from os import path
 from .inject import Inject
 
 class Config:
@@ -206,16 +207,19 @@ class Config:
         return obj
 
 
-
     @staticmethod
-    def __file_analysis(file_path, file_type, cover):
+    def __file_analysis(file_path, file_type, cover, file_path_prefix=''):
+
         def file_analysis(file_path_):
             if type(file_path_) == str:
-                config_data = Config.__read_config(file_path_, file_type)
+                config_data = Config.__read_config(path.join(file_path_prefix, file_path_), file_type)
             elif type(file_path_) == dict:
                 file_type_ = file_path_.get(Config.file_type)
                 file_type_ = file_type_ if file_type_ else file_type
-                config_data = Config.__read_config(file_path_.get(Config.file_path), file_type_)
+                
+                file_specific_path = file_path_.get(Config.file_path)
+                file_specific_path = path.join(file_path_prefix, file_path) if file_specific_path else None
+                config_data = Config.__read_config(file_specific_path, file_type_)
                 config_data = Config.__merge_dict(config_data, 
                                                   Config.__read_config(file_path_.get(Config.file_url), file_type_, True), cover)
             else:
@@ -268,6 +272,7 @@ class Config:
             value = config_data.pop(key)
             config_data[Config.__name_format(key)] = value
 
+        config_data_ = {}
         if config_path:
             config_path = config_path.split('.')
             config_path[0] = Config.__name_format(config_path[0])
@@ -278,9 +283,13 @@ class Config:
                 if config_msg is None:
                     break
             
-            config_data = Config.__merge_dict(config_data, 
-                                              Config.__file_analysis(config_msg, file_type, cover), cover)
-            
+            config_data_ = Config.__file_analysis(config_msg, file_type, cover)
+            for key in list(config_data_.keys()):
+                value = config_data_.pop(key)
+                config_data_[Config.__name_format(key)] = value
+        
+        config_data = Config.__merge_dict(config_data, config_data_, cover)
+        
         Config.refresh(config_data, cover)
 
     @staticmethod

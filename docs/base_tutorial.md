@@ -75,7 +75,7 @@
 
 > 多个类作为配置目标，也只需要一行代码就能解决。
 
-1. 配置文件[examples/tutorial/multiple_target/multiple_target.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multiple_target/multiple_target.yaml)
+1. 配置文件[examples/tutorial/multitarget/multitarget.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multitarget/multitarget.yaml)
 
     ```yaml
     user:
@@ -87,7 +87,7 @@
         id: multiple-target-id
     ```
 
-2. 源码文件[examples/tutorial/multiple_target/multiple_target.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multiple_target/multiple_target.py)
+2. 源码文件[examples/tutorial/multitarget/multitarget.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multitarget/multitarget.py)
 
     ```python
     from no_config import Config
@@ -104,7 +104,7 @@
         id = None
 
     if __name__ == '__main__':
-        Config.init(path.join(path.dirname(__file__), 'multiple_target.yaml'))
+        Config.init(path.join(path.dirname(__file__), 'multitarget.yaml'))
         print(User.password)
         print(User.username)
         print(App.name)
@@ -112,9 +112,9 @@
     ```
 
 
-## 实体注入
+## 实体映射
 
-> 当某个字段是一个实体时，可以通过让字段等于实体的方式注入配置。通过此方式注入的属性都是静态的。
+> 当某个字段是一个实体时，可以通过让字段等于实体的方式映射配置。通过此方式映射的属性都是静态的。
 
 1. 配置文件[examples/tutorial/class_mapper/class_mapper.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/class_mapper/class_mapper.yaml)
 
@@ -146,7 +146,7 @@
         print(User.username)
     ```
 
-## 方法注入
+## 方法映射
 
 > 需要对配置信息进行处理时可以直接指定一个方法。
 

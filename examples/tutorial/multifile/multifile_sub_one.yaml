@@ -1,0 +1,7 @@
+user:
+    password: ncdhz-multifile-sub-password
+app:
+    name: multifile-sub-name
+
+config:
+    path: ./multifile_sub_two.yaml

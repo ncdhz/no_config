@@ -12,7 +12,7 @@ class App:
     id = None
 
 if __name__ == '__main__':
-    Config.init(path.join(path.dirname(__file__), 'multiple_target.yaml'))
+    Config.init(path.join(path.dirname(__file__), 'multifile_sub_one.yaml'), config_path='config.path')
     print(User.password)
     print(User.username)
     print(App.name)
