@@ -24,5 +24,4 @@ if __name__ == '__main__':
         
         print(f'\nPython file: {py}')
         os.system(f'python {py}')
-        print('.' * 110)
         

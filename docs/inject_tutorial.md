@@ -58,7 +58,7 @@ class App:
             pass
 
     if __name__ == '__main__':
-        app = App('app_id', dict(username='username', password='password'))
+        app = App('app-id', dict(username='username', password='password'))
         print(app.id)
         print(app.user.username)
         print(app.user.password)
@@ -82,7 +82,7 @@ class App:
             pass
 
     if __name__ == '__main__':
-        app = App('app_id', 'ncdhz-inject-func')
+        app = App('app-id', 'ncdhz-inject-func')
         print(app.id)
         print(app.name)
     ```
@@ -109,10 +109,10 @@ class App:
     if __name__ == '__main__':
 
         config_inject = App(config_inject=dict(
-            id='config_inject_app_id',
+            id='config-inject-app-id',
             user=dict(
-                username='config_inject_username',
-                password='config_inject_password'
+                username='config-inject-username',
+                password='config-inject-password'
             )
         ))
         print(config_inject.id)
@@ -142,10 +142,10 @@ class App:
     if __name__ == '__main__':
 
         config_inject_alias = App(config_inject_alias=dict(
-            id='config_inject_alias_app_id',
+            id='config-inject-alias-app-id',
             user=dict(
-                username='config_inject_alias_username',
-                password='config_inject_alias_password'
+                username='config-inject-alias-username',
+                password='config-inject-alias-password'
             )
         ))
         print(config_inject_alias.id)

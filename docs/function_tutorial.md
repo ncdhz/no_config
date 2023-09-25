@@ -50,6 +50,55 @@
         print(App.id)
     ```
 
+## 文件嵌套
+
+> 文件嵌套通过`Config`的`config_path`属性指定，下面例子中被嵌套的文件为配置文件二，指定的路径为`config.path`。
+
+1. 配置文件一[examples/tutorial/multifile/multifile_sub_one.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile_sub_one.yaml)
+
+    ```yaml
+    user:
+        password: ncdhz-multifile-sub-password
+    app:
+        name: multifile-sub-name
+
+    config:
+        path: ./multifile_sub_two.yaml
+    ```
+
+2. 配置文件二[examples/tutorial/multifile/multifile_sub_two.yaml](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile_sub_two.yaml)
+
+    ```yaml
+    user:
+        username: ncdhz-multifile-sub-username
+    app:
+        id: multifile-sub-id
+    ```
+
+3. 源码文件[examples/tutorial/multifile/multifile_sub.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/multifile/multifile_sub.py)
+
+    ```python
+    from no_config import Config
+    from os import path
+
+    @Config()
+    class User:
+        password = None
+        username = None
+
+    @Config()
+    class App:
+        name = None
+        id = None
+
+    if __name__ == '__main__':
+        Config.init(path.join(path.dirname(__file__), 'multifile_sub_one.yaml'), config_path='config.path')
+        print(User.password)
+        print(User.username)
+        print(App.name)
+        print(App.id)
+    ```
+
 ## 获取配置
 
 > 配置分为映射配置`get_config`和所有配置`get_all_config`，其中`get_config`表示通过`init`或者`refresh`函数映射的配置，`get_all_config`表示获取含有`@Config`修饰器的所有配置。

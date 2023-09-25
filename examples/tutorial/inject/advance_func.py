@@ -9,6 +9,6 @@ class App:
         pass
 
 if __name__ == '__main__':
-    app = App('app_id', 'ncdhz-inject-func')
+    app = App('app-id', 'ncdhz-inject-func')
     print(app.id)
     print(app.name)

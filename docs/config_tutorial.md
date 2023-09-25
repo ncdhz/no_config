@@ -70,14 +70,13 @@
 
 1. 源码文件[examples/tutorial/type_mapper/type_mapper_handle.py](https://github.com/ncdhz/no_config/blob/main/examples/tutorial/type_mapper/type_mapper_handle.py)
 
-
     ```python
     from no_config import Config
     from os import path
 
     class User:
         def __init__(self, username):
-            username += '_xxx'
+            username += '-xxx'
             self.username = username
 
     @Config(type=dict(user=User))

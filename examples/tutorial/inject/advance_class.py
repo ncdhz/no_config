@@ -11,7 +11,7 @@ class App:
         pass
 
 if __name__ == '__main__':
-    app = App('app_id', dict(username='username', password='password'))
+    app = App('app-id', dict(username='username', password='password'))
     print(app.id)
     print(app.user.username)
     print(app.user.password)

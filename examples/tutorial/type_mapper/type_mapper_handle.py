@@ -3,7 +3,7 @@ from os import path
 
 class User:
     def __init__(self, username):
-        username += '_xxx'
+        username += '-xxx'
         self.username = username
 
 @Config(type=dict(user=User))

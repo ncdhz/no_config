@@ -13,10 +13,10 @@ class App:
 if __name__ == '__main__':
 
     config_inject_alias = App(config_inject_alias=dict(
-        id='config_inject_alias_app_id',
+        id='config-inject-alias-app-id',
         user=dict(
-            username='config_inject_alias_username',
-            password='config_inject_alias_password'
+            username='config-inject-alias-username',
+            password='config-inject-alias-password'
         )
     ))
     print(config_inject_alias.id)
