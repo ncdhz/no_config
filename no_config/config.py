@@ -206,31 +206,57 @@ class Config:
             raise ValueError('Duplicate configuration attributes.')
         return obj
 
-
     @staticmethod
-    def __file_analysis(file_path, file_type, cover, file_path_prefix=''):
+    def __get_value(obj, key):
+        if key is None:
+            return None
+        for k in key:
+            obj = obj.get(k)
+            if obj is None:
+                return None
+        return obj
+    
+    @staticmethod
+    def __file_analysis(file_path, file_type, cover, file_path_prefix='', config_path=None):
 
         def file_analysis(file_path_):
             if type(file_path_) == str:
-                config_data = Config.__read_config(path.join(file_path_prefix, file_path_), file_type)
+                file_specific_path = file_path_
+                if not path.isabs(file_path_):
+                    file_specific_path = path.join(file_path_prefix, file_path_)
+                config_data = Config.__read_config(file_specific_path, file_type)
             elif type(file_path_) == dict:
                 file_type_ = file_path_.get(Config.file_type)
                 file_type_ = file_type_ if file_type_ else file_type
                 
                 file_specific_path = file_path_.get(Config.file_path)
-                file_specific_path = path.join(file_path_prefix, file_path) if file_specific_path else None
+                if file_specific_path and not path.isabs(file_specific_path):
+                    file_specific_path = path.join(file_path_prefix, file_path)
                 config_data = Config.__read_config(file_specific_path, file_type_)
                 config_data = Config.__merge_dict(config_data, 
                                                   Config.__read_config(file_path_.get(Config.file_url), file_type_, True), cover)
             else:
                 raise ValueError(f'File_path structure error. [{file_path_}]')
-            return config_data
+
+            for key in list(config_data.keys()):
+                value = config_data.pop(key)
+                config_data[Config.__name_format(key)] = value
+            
+            config_value = Config.__get_value(config_data, config_path)
+
+            config_obj = {}
+            if config_value:
+                config_obj = Config.__file_analysis(config_value, file_type, cover, 
+                                                    file_path_prefix=path.dirname(file_specific_path) if file_specific_path else '')
+
+            return Config.__merge_dict(config_data, config_obj, cover)
 
         if file_path is None:
             return {}
         
         if type(file_path) in {str, dict}:
             config_data = file_analysis(file_path)
+
         elif type(file_path) in {list, tuple, set}:
             config_data = {}
             for fp in file_path:
@@ -266,30 +292,11 @@ class Config:
         config_path: The configuration path is used to find other configuration files.
         cover: The subsequent configuration file will overwrite the previous configuration.
         '''
-        config_data = Config.__file_analysis(file_path, file_type, cover)
-        
-        for key in list(config_data.keys()):
-            value = config_data.pop(key)
-            config_data[Config.__name_format(key)] = value
-
-        config_data_ = {}
         if config_path:
             config_path = config_path.split('.')
             config_path[0] = Config.__name_format(config_path[0])
-            
-            config_msg = config_data
-            for path_ in config_path:
-                config_msg = config_msg.get(path_)
-                if config_msg is None:
-                    break
-            
-            config_data_ = Config.__file_analysis(config_msg, file_type, cover)
-            for key in list(config_data_.keys()):
-                value = config_data_.pop(key)
-                config_data_[Config.__name_format(key)] = value
-        
-        config_data = Config.__merge_dict(config_data, config_data_, cover)
-        
+
+        config_data = Config.__file_analysis(file_path, file_type, cover, config_path=config_path)
         Config.refresh(config_data, cover)
 
     @staticmethod
@@ -306,7 +313,7 @@ class Config:
 
         if cover:
             if config_data is None:
-                raise TypeError('[Cover] is True, [config_data] cannot be empty')
+                raise TypeError('[cover] is True, [config_data] cannot be empty')
             Config.__init(config_data, Config.__config_class)
         else:
             Config.__init(Config.__config_data, Config.__config_class)
