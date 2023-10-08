@@ -67,26 +67,28 @@ class Config:
         for key in config:
             if key in clazz.__dict__:
                 value = clazz.__dict__[key]
-                try:
-                    vars(value)
+                data = config[key]
+                if key in type_:
+                    type_value = type_[key]
+                    if type(type_value) is list and len(type_value) > 0:
+                        data = [Config.__init_obj(type_value[0], cv) for cv in data]
+                    else:
+                        data = Config.__init_obj(type_[key], data)
+                else:
                     try:
-                        if type(value) in {types.FunctionType, types.MethodType, Inject}:
-                            data = Config.__init_obj(value, config[key])
-                            exec(f'clazz.{key}=data')
-                        else:
-                            Config.__input(config[key], value, {})
-                    except:
-                        raise ValueError(
-                            f'[class: {clazz}] [config: {config}] [key: {key}] config error.')
-                except TypeError:
-                    data = config[key]
-                    if key in type_:
-                        type_value = type_[key]
-                        if type(type_value) is list and len(type_value) > 0:
-                            data = [Config.__init_obj(type_value[0], cv) for cv in data]
-                        else:
-                            data = Config.__init_obj(type_[key], data)
-                    exec(f'clazz.{key}=data')
+                        vars(value)
+                        try:
+                            if type(value) in {types.FunctionType, types.MethodType, Inject}:
+                                data = Config.__init_obj(value, data)
+                            else:
+                                Config.__input(data, value, {})
+                                continue
+                        except:
+                            raise ValueError(
+                                f'[class: {clazz}] [config: {config}] [key: {key}] config error.')
+                    except TypeError:
+                        pass
+                exec(f'clazz.{key}=data')
 
     @staticmethod
     def __init_obj(obj, paras):
@@ -183,6 +185,10 @@ class Config:
             config = toml.loads(data)
         else:
             raise TypeError(f'File type not supported. [{file_type}]')
+        
+        if not config:
+            return {}
+        
         return config
 
     @staticmethod
