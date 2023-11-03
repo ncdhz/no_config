@@ -203,7 +203,7 @@ class Config:
         elif obj_type == dict and obj1_type == dict:
             for key in obj1:
                 if key in obj:
-                    obj[key] = Config.__merge_dict(obj[key], obj1[key])
+                    obj[key] = Config.__merge_dict(obj[key], obj1[key], cover)
                 else:
                     obj[key] = obj1[key]
         else:
