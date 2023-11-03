@@ -236,8 +236,8 @@ class Config:
                 file_type_ = file_type_ if file_type_ else file_type
                 
                 file_specific_path = file_path_.get(Config.file_path)
-                if file_specific_path and not path.isabs(file_specific_path):
-                    file_specific_path = path.join(file_path_prefix, file_path)
+                if not path.isabs(file_specific_path):
+                    file_specific_path = path.join(file_path_prefix, file_specific_path)
                 config_data = Config.__read_config(file_specific_path, file_type_)
                 config_data = Config.__merge_dict(config_data, 
                                                   Config.__read_config(file_path_.get(Config.file_url), file_type_, True), cover)
