@@ -59,7 +59,8 @@ class Inject:
                     if type(value) is dict:
                         kwargs[key] = __value(**value)
                     elif type(__value) is list and len(__value) > 0:
-                        kwargs[key] = [__value[0](**v) if type(v) is dict else __value[0](v) for v in value]
+                        if value is not None:
+                            kwargs[key] = [__value[0](**v) if type(v) is dict else __value[0](v) for v in value]
                     else:
                         kwargs[key] = __value(value)
 

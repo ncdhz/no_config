@@ -71,7 +71,10 @@ class Config:
                 if key in type_:
                     type_value = type_[key]
                     if type(type_value) is list and len(type_value) > 0:
-                        data = [Config.__init_obj(type_value[0], cv) for cv in data]
+                        if data is not None:
+                            data = [Config.__init_obj(type_value[0], cv) 
+                                    if cv is not None else type_value[0]() 
+                                    for cv in data]
                     else:
                         data = Config.__init_obj(type_[key], data)
                 else:
